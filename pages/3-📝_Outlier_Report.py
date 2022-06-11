@@ -11,7 +11,7 @@ st.markdown("")
 
 
     
-df = pd.read_csv('data.csv')
+df = pd.read_csv('./data.csv')
 
 st.markdown("<h4 style='text-align: center;'> Raw data</h4>", unsafe_allow_html=True)
 fig_1 = px.line(
