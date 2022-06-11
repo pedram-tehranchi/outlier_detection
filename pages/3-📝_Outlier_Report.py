@@ -10,10 +10,7 @@ st.sidebar.markdown("# Outlier Report 📝")
 st.markdown("")
 
 cwd = os.getcwd()
-os.chdir(f"{cwd}")
-for file in glob.glob("*.*"):
-    print(file)
-df = pd.read_csv(f'{cwd}/data.csv')
+df = pd.read_csv(f'{cwd}/pages/data.csv')
 
 st.markdown("<h4 style='text-align: center;'> Raw data</h4>", unsafe_allow_html=True)
 fig_1 = px.line(
