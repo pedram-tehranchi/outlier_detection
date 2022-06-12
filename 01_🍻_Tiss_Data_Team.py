@@ -1,4 +1,8 @@
 import streamlit as st
+from streamlit import server
+
+server.enableWebsocketCompression=False
+server.enableXsrfProtection=False
 
 _,_,col3,_,_ = st.columns(5)
 with col3:
