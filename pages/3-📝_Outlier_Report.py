@@ -24,10 +24,10 @@ st.plotly_chart(fig_1, use_container_width=True)
 
 df['actual_facility'] = df['facility']
 df['zscore'] = (df.facility - df.facility.mean())/df.facility.std(ddof=0)
-outliers = df[df['zscore']>=2]
+outliers = df[df['zscore']>=3]
 
-df['facility'] = np.where(df['zscore']>=2, None, df['facility'])
-df['zscore'] = np.where(df['zscore']>=2, None, df['zscore'])
+df['facility'] = np.where(df['zscore']>=3, None, df['facility'])
+df['zscore'] = np.where(df['zscore']>=3, None, df['zscore'])
 df = df.ffill()
 
 st.markdown("<h4 style='text-align: center;'> step 1</h4>", unsafe_allow_html=True)
@@ -40,10 +40,16 @@ fig_2 = px.line(
     )
 st.plotly_chart(fig_2, use_container_width=True)
 
-df['mean_50'] = df['facility'].rolling(51, center=True).mean()
-df['diff'] = abs(df['mean_50']-df['facility'])
-df['facility'] = np.where(df['diff']>=2, df['mean_50'], df['facility'])
+# df['mean_50'] = df['facility'].rolling(51, center=True).mean()
+# df['diff'] = abs(df['mean_50']-df['facility'])
+# df['facility'] = np.where(df['diff']>=2, df['mean_50'], df['facility'])
 
+
+# df['median_20'] = df['facility'].rolling(51, center=True).median()
+# df['std_20'] = df['facility'].rolling(51, center=True).std()
+# df['zscore'] = (df['facility'] - df['median_20'])/df['std_20']
+# df['facility'] = np.where(abs(df['zscore'])>=4, None, df['facility'])
+# df = df.ffill()
 
 st.markdown("<h4 style='text-align: center;'> step 2</h4>", unsafe_allow_html=True)
 fig_3 = px.line(
@@ -61,7 +67,7 @@ st.markdown("<h4 style='text-align: center;'> Actual Facility VS Normalized Faci
 fig_4 = px.line(
         df,
         x="time",
-        y=["actual_facility", "normalized_facility"]
+        y=["actual_facility", "normalized_facility", "zscore"]
         #,color="Real Data"
         # barmode="group",
     )
@@ -72,16 +78,15 @@ st.markdown("<h4 style='text-align: center;'> outlier code:</h4>", unsafe_allow_
 code = '''def outlier_normalizer(raw_data):
     raw_data['actual_facility'] = raw_data['facility']
     raw_data['zscore'] = (raw_data.facility - raw_data.facility.mean())/raw_data.facility.std(ddof=0)
-    raw_data['facility'] = np.where(raw_data['zscore']>=2, None, raw_data['facility'])
-    raw_data['zscore'] = np.where(raw_data['zscore']>=2, None, raw_data['zscore'])
+    raw_data['facility'] = np.where(raw_data['zscore']>=3, None, raw_data['facility'])
+    raw_data['zscore'] = np.where(raw_data['zscore']>=3, None, raw_data['zscore'])
     raw_data = raw_data.ffill()
-    raw_data['mean_50'] = raw_data['facility'].rolling(51, center=True).mean()
-    raw_data['diff'] = abs(raw_data['mean_50']-raw_data['facility'])
-    raw_data['facility'] = np.where(raw_data['diff']>=2, raw_data['mean_50'], raw_data['facility'])
+    raw_data['median_20'] = raw_data['facility'].rolling(51, center=True).median()
+    raw_data['std_20'] = raw_data['facility'].rolling(51, center=True).std()
+    raw_data['zscore'] = (raw_data['facility'] - raw_data['median_20'])/raw_data['std_20']
+    raw_data['facility'] = np.where(abs(raw_data['zscore'])>=4, None, raw_data['facility'])
+    raw_data = raw_data.ffill()
     raw_data['normalized_facility'] = raw_data['facility']
     raw_data.drop(columns=['facility'], inplace=True)
     return raw_data'''
 st.code(code, language='python')
-
-            
-   
