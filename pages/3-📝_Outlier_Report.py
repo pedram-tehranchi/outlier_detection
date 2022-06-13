@@ -45,11 +45,11 @@ st.plotly_chart(fig_2, use_container_width=True)
 # df['facility'] = np.where(df['diff']>=2, df['mean_50'], df['facility'])
 
 
-# df['median_20'] = df['facility'].rolling(51, center=True).median()
-# df['std_20'] = df['facility'].rolling(51, center=True).std()
-# df['zscore'] = (df['facility'] - df['median_20'])/df['std_20']
-# df['facility'] = np.where(abs(df['zscore'])>=4, None, df['facility'])
-# df = df.ffill()
+df['median_20'] = df['facility'].rolling(51, center=True).median()
+df['std_20'] = df['facility'].rolling(51, center=True).std()
+df['zscore'] = (df['facility'] - df['median_20'])/df['std_20']
+df['facility'] = np.where(abs(df['zscore'])>=4, None, df['facility'])
+df = df.ffill()
 
 st.markdown("<h4 style='text-align: center;'> step 2</h4>", unsafe_allow_html=True)
 fig_3 = px.line(
